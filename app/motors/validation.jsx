@@ -1,17 +1,19 @@
-import { View, Text, StyleSheet, Alert, TextInput, TouchableOpacity, ActivityIndicator, Image } from 'react-native'
+import { View, Text, StyleSheet, Alert, TextInput, TouchableOpacity, ActivityIndicator, Image, ScrollView, BackHandler } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import axios from 'axios'
-import { router } from 'expo-router'
+import { router, useNavigation } from 'expo-router'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 
-const validation = () => {
+const Validation = () => {
     const [loading, setLoading] = useState(false)
     const [user, setUser] = useState("")
     const [token, setToken] = useState(null)
     const [alternator, setAlternator] = useState(undefined)
     const [serial, setSerial_no] = useState("")
+    const navigation = useNavigation()
 
     useEffect(() => {
+        AsyncStorage.removeItem("token")
         AsyncStorage.getItem("token").then((tokenJWT) => {
             if (tokenJWT) {
                 setToken(tokenJWT)
@@ -30,7 +32,14 @@ const validation = () => {
                 console.error(err);
             })
         })
-    })
+        const backAction = () => {
+            setAlternator(undefined)
+        }
+        const backHandler = BackHandler.addEventListener("hardwareBackPress", backAction)
+
+        return () => backHandler.remove()
+    }, [navigation])
+
     const getSingleEngine = () => {
         if (serial === "") {
             Alert.alert("Alternator Serial Number", "Please fill the Serial no")
@@ -43,6 +52,7 @@ const validation = () => {
         })
             .then((res) => {
                 if (!res.data.success) {
+                    setLoading(false)
                     Alert.alert("Alternator Serial No Error", res.data.msg ? res.data.msg : "Please fill the serial no.")
                 } else {
                     setLoading(false)
@@ -62,7 +72,7 @@ const validation = () => {
 
 
     return (
-        <View style={styles.container}>
+        <ScrollView contentContainerStyle={styles.container} >
             <View style={{ display: 'flex', alignItems: "center", width: '100%', justifyContent: "space-between", flexDirection: "row", marginBottom: 20 }}>
                 <Text style={{ color: "#000", fontSize: 20, fontWeight: 450, }}>Validate an alternator</Text>
             </View>
@@ -119,7 +129,7 @@ const validation = () => {
                     </View>
                 </View >
             }
-        </View>
+        </ScrollView>
     )
 }
 
@@ -159,4 +169,4 @@ const styles = StyleSheet.create({
     },
 })
 
-export default validation
+export default Validation

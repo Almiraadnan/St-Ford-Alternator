@@ -13,7 +13,7 @@ const RootLayout = () => {
             <Stack.Screen name='index' options={{ headerShown: false }} />
             <Stack.Screen name='users/register' options={{ headerStyle: { backgroundColor: "#C80036" }, headerTitle: "", headerTintColor: "#fff", headerShadowVisible: false }} />
             <Stack.Screen name='users/login' options={{ headerStyle: { backgroundColor: "#C80036" }, headerTitle: "", headerTintColor: "#fff", headerShadowVisible: false }} />
-            <Stack.Screen name='motors/validation' options={{
+            <Stack.Screen name='motors/Validation' options={{
                 headerStyle: { backgroundColor: "#C80036" }, headerTitle: (props) => (
                     <Image
                         style={{ width: 360, height: 70 }}

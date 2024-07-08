@@ -2,29 +2,35 @@ import { View, Text, StyleSheet, TouchableOpacity } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import { Link, router } from 'expo-router'
 import AsyncStorage from '@react-native-async-storage/async-storage'
+import SplashScreenView from './SplashScreenView'
+import Validation from './motors/Validation.jsx'
 
 const Index = () => {
-    const [showError, setShowError] = useState(false)
+
     const [token, setToken] = useState(null)
+    const [isShowSplash, setIsShowSplash] = useState(true)
 
     useEffect(() => {
-        AsyncStorage.getItem("token").then((tokenJWT) => {
-            if (tokenJWT) {
-                router.replace("/motors/validation")
-                setToken(tokenJWT)
-                return
-            }
-            setToken(null)
-        })
+        setTimeout(() => {
+            setIsShowSplash(false)
+            AsyncStorage.getItem("token").then((tokenJWT) => {
+                if (tokenJWT) {
+                    setToken(tokenJWT)
+                    return
+                }
+                setToken(null)
+            })
+        }, 4000);
     }, [])
+
+
 
     return (
         <>
-            <View style={{
+            {isShowSplash ? <SplashScreenView /> : <View style={{
                 flex: 1, backgroundColor: "#C80036", padding: 20,
                 paddingTop: 100
             }}>
-
                 <Text style={styles.welcome_text}>Welcome to the,</Text>
                 <Text style={{
                     color: "white",
@@ -47,13 +53,24 @@ const Index = () => {
                         <Text style={{ fontSize: 15, color: "#C80036", fontWeight: 500 }}>Login</Text>
                     </Link>
                     <Text style={{ color: "white", fontSize: 15 }}>Validate a ST Ford alternator ?</Text>
-                    <TouchableOpacity onPress={() => {
-                        setShowError(!showError)
-                    }} style={styles.outline}>
-                        <Text style={{ fontSize: 15, color: "#fff", fontWeight: 500 }}>Validate an Alternator</Text>
-                    </TouchableOpacity>
+                    <Link href={"/users/login"} style={{
+                        backgroundColor: "transparent",
+                        borderColor: "#fff",
+                        borderWidth: 2,
+                        alignItems: "center",
+                        textAlign: "center",
+                        borderRadius: 5,
+                        paddingTop: 15,
+                        paddingBottom: 15,
+                        marginBottom: 20,
+                        marginTop: 10,
+                        fontSize: 15, color: "#fff", fontWeight: 500
+                    }}>
+                        Validate an Alternator
+                    </Link>
                 </View>
-            </View>
+            </View >
+            }
         </>
 
     )
@@ -89,18 +106,6 @@ const styles = StyleSheet.create({
     second_container: {
         marginTop: 26
     },
-    outline: {
-        backgroundColor: "transparent",
-        borderColor: "#fff",
-        borderWidth: 2,
-        alignItems: "center",
-        textAlign: "center",
-        borderRadius: 5,
-        paddingTop: 15,
-        paddingBottom: 15,
-        marginBottom: 20,
-        marginTop: 10
-    }
 })
 
 export default Index
